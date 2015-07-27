@@ -10,6 +10,8 @@
 <script src="elements.js"></script>
 <script src="altimeter_ticker.js"></script>
 <script src="airspeed_ticker.js"></script>
+<script src="attitude_indicator.js"></script>
+<script src="vertical_speed.js"></script>
 <script type="text/javascript">
 
 	var GUAGE_BACKGROUND = "#191921";
@@ -29,28 +31,39 @@
 
   	guages = []
 
+
+  	guages[0] = new AttitudeIndicator(ctx, 
+  	{
+  		"width": 400,
+  		"height": 325,
+  		"x": 223,
+  		"y": 180
+  	}, 
+  	5,
+  	data);
+
   	// Altimeter digits ticker
-  	guages[0] = new AltimeterTicker(ctx, 
+  	guages[1] = new AltimeterTicker(ctx, 
   	{
   		"width": 160,
   		"height": 85,
-  		"x": 720,
+  		"x": 650,
   		"y": 300 
   	}, 
   	data);
 
   	// Altimeter digits tape
-  	guages[1] = new AltimeterTape(ctx, 
+  	guages[2] = new AltimeterTape(ctx, 
   	{
   		"width": 100,
   		"height": 400,
-  		"x": guages[0].loc.x + 163,
-  		"y": guages[0].loc.y + guages[0].loc.height / 2 - 200
+  		"x": guages[1].loc.x + 163,
+  		"y": guages[1].loc.y + guages[1].loc.height / 2 - 200
   	}, 
   	data);
 
   	// Altimeter digits ticker
-  	guages[2] = new AirspeedTicker(ctx, 
+  	guages[3] = new AirspeedTicker(ctx, 
   	{
   		"width": 80,
   		"height": 85,
@@ -60,22 +73,24 @@
   	data);
 
   	// Altimeter digits tape
-  	guages[3] = new AirspeedTape(ctx, 
+  	guages[4] = new AirspeedTape(ctx, 
   	{
   		"width": 75,
   		"height": 400,
-  		"x": guages[2].loc.x - 78,
-  		"y": guages[2].loc.y + guages[2].loc.height / 2 - 200
+  		"x": guages[3].loc.x - 78,
+  		"y": guages[3].loc.y + guages[3].loc.height / 2 - 200
   	}, 
   	data);
 
+  	guages[5] = new VerticalSpeedIndicator(ctx, 
+  	{
+  		"width": 100,
+  		"height": 400,
+  		"x": 920,
+  		"y": guages[1].loc.y + guages[1].loc.height / 2 - 200 
+  	}, 
+  	data);
 
-	var loc = {
-  		"width": 400,
-  		"height": 325,
-  		"x": 260,
-  		"y": 180
-  	}
 
   	var mousePos = {x: 0, y: 0};
 	cvs.addEventListener('mousemove', function(evt) {
@@ -87,7 +102,7 @@
   	ctx.fillRect(0, 0, 1100, 1000)
 
 	var now = then = delta = new Date().getTime();
-	value = 100;
+	value = lastValue = 100;
 	rate = 100
 	var render = function() 
 	{   
@@ -95,12 +110,16 @@
     	delta = (now - then) / 1000.0;
    		then = now;
 
-   		value += delta * rate;
-   		data.altitude = value
-   		data.airspeed = value / 100
+   		lastValue = value;
 
-   		// drawAttitude(loc, (mousePos.y - 500) / 10, - (500 - mousePos.x) / 10, 5)
-   		drawAttitude(loc, 20 * Math.cos(value / 50), 20 * Math.sin(value / 100), 3 * Math.sin(value / 100), 5)
+   		value += delta * rate;
+   		data.altitude = value;
+   		data.verticalSpeed = value - lastValue;
+   		data.airspeed = value / 100;
+   		data.bankAngle = 20 * Math.cos(value / 50);
+   		data.pitchAngle = 20 * Math.sin(value / 100);
+   		data.turnCoordinationAngle = 3 * Math.sin(value / 100);
+
    		updateAndDraw();
 
 	    // Redraw
@@ -128,93 +147,5 @@
         };
       }
 	
-
-	function drawAttitude(loc, pitchAngle, bankAngle, turnCoordinationDegrees, pixelsPerDegree)
-	{
-		var x = loc.x;
-		var y = loc.y;
-		var wid = loc.width;
-		var hei = loc.height;
-
-		ctx.save();
-		ctx.rect(x, y, wid, hei);
-		ctx.clip();
-
-		ctx.translate(x + wid / 2, y + hei / 2);
-
-		ctx.rotate(bankAngle * Math.PI / 180);
-		ctx.translate(0, pixelsPerDegree * pitchAngle);
-
-		ctx.fillStyle = SKY;
-		ctx.fillRect(- wid, -1000, 2 * wid, 1000);
-		ctx.fillStyle = GROUND;
-		ctx.fillRect(- wid, 0, 2 * wid, 1000);
-		ctx.fillStyle = GUAGE_FOREGROUND;
-		ctx.fillRect(- wid, 0, 2 * wid, 1);
-
-		var WIDTH_TEN = 100;
-		var WIDTH_FIVE = 50;
-
-		for (var i = -90; i < 90; i += 5)
-		{
-			ctx.fillStyle = GUAGE_FOREGROUND;
-			ctx.font = "15px Arial";
-			ctx.textAlign = "center"
-			ctx.textBaseline = 'middle';
-			var newY = - i * (pixelsPerDegree)
-			if (i % 10 == 0 && i != 0)
-			{
-				ctx.fillRect(- WIDTH_TEN / 2, newY, WIDTH_TEN, 1);
-				ctx.fillText(i, - WIDTH_TEN / 2 - 20, newY);
-				ctx.fillText(i, + WIDTH_TEN / 2 + 20, newY);
-			}
-			else if (i != 0)
-			{
-				ctx.fillRect(- WIDTH_FIVE / 2, newY, WIDTH_FIVE, 1);
-			}
-		}
-
-		ctx.restore();
-		ctx.save();
-		ctx.translate(x + wid / 2, y + hei / 2);
-
-		ctx.fillStyle = "#000";
-		ctx.strokeStyle = GUAGE_FOREGROUND;
-		ctx.beginPath();
-		ctx.moveTo(-125, -3);
-		ctx.lineTo(-50, -3);
-		ctx.lineTo(-50, 20);
-		ctx.lineTo(-56, 20);
-		ctx.lineTo(-56, 3);
-		ctx.lineTo(-125, 3);
-		ctx.closePath();
-		ctx.stroke();
-		ctx.fill();
-
-		ctx.beginPath();
-		ctx.moveTo(125, -3);
-		ctx.lineTo(50, -3);
-		ctx.lineTo(50, 20);
-		ctx.lineTo(56, 20);
-		ctx.lineTo(56, 3);
-		ctx.lineTo(125, 3);
-		ctx.closePath();
-		ctx.stroke();
-		ctx.fill();
-
-		var boxWidth = 15;
-
-		ctx.rect(-boxWidth, -boxWidth, 2 * boxWidth, 2 * boxWidth);
-		ctx.stroke();
-		ctx.fill();
-
-		ctx.fillStyle = GUAGE_FOREGROUND;
-		ctx.beginPath();
-		ctx.arc(turnCoordinationDegrees * pixelsPerDegree, 0, boxWidth - 2, 0, 2 * Math.PI);
-		ctx.stroke();
-		ctx.fill();
-
-		ctx.restore();
-	}
 
 </script>
