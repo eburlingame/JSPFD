@@ -35,7 +35,7 @@ function drawTickerDigit(list, value, scrollThreshold, digitSpacing, location, f
 		var yLoc = y + hei / 2;
 		var offset = - (fontSize + digitSpacing) * (i - valueOffset);
 		if (I > -1)
-		{
+		{1
 			ctx.fillText(list[I], xLoc, yLoc + offset);
 		}
 	}
@@ -49,14 +49,16 @@ function drawTickerDigit(list, value, scrollThreshold, digitSpacing, location, f
 
 // Scale in pixels per small tick
 // Negative is negative allowed
-function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative, scale, value)
+function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative, scale, value, bugValue)
 {
 	var x = location.x;
 	var y = location.y;
 	var wid = location.width;
 	var hei = location.height;
 	ctx.save();
-	ctx.rect(x, y, wid, hei);
+
+	if (leftAlign) 	ctx.rect(x - 0.2 * wid, y, 1.2 * wid, hei);
+	else 			ctx.rect(x, y, 1.2 * wid, hei);
 	ctx.clip();
 	
 	var numberToDraw = Math.floor(hei / scale + 0.5);
@@ -101,8 +103,35 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative,
 		}
 	}
 
+	var bugHeight = 50;
+	var bugWidth = 0.1;
+	var diff = (value - bugValue) / smallTicks;
+	var newY = (y + hei / 2) + scale * (diff);
+	// console.log(bugValue);
+	if (newY + fontSize > y && newY - fontSize < y + hei)
+	{
+		ctx.fillStyle = BUG;
+		ctx.beginPath();
+		if (leftAlign)
+		{
+			ctx.moveTo(x - wid * bugWidth * 0, newY - bugHeight / 2);
+			ctx.lineTo(x - wid * bugWidth * 1.0, newY - bugHeight / 2);
+			ctx.lineTo(x - wid * bugWidth * 0.5, newY);
+			ctx.lineTo(x - wid * bugWidth * 1.0, newY + bugHeight / 2);
+			ctx.lineTo(x - wid * bugWidth * 0.0, newY + bugHeight / 2);
+		}
+		else
+		{
+			ctx.moveTo(x + wid * 0.99 + wid * bugWidth * 0, newY - bugHeight / 2);
+			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 1.0, newY - bugHeight / 2);
+			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 0.5, newY);
+			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 1.0, newY + bugHeight / 2);
+			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 0.0, newY + bugHeight / 2);
+		}
+		ctx.closePath();
+		ctx.fill();
+	}
+
 	ctx.restore();
-	// ctx.fillStyle = BACKGROUND;
-	// ctx.fillRect(x, y - 2 * fontSize, wid, 2 * fontSize);
-	// ctx.fillRect(x, y + hei, wid, 2 * fontSize);
+
 }

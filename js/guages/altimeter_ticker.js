@@ -97,7 +97,9 @@ function AltimeterTape(ctx, location, data)
 
 	this.draw = function()
 	{
-		//       location, 		fontSize, leftAlign, bigTicks, smallTicks, negative, scale, value
-		drawTape(this.loc,      20,      true,      1000,     100,         true,     40,    data.altitude)
+		//       location, 		fontSize, leftAlign, bigTicks, smallTicks, negative,
+		drawTape(this.loc,      20,      true,      1000,     100,         true,    
+		//  scale, value,         bugValue 
+			40,    data.altitude, data.altitudeBug);
 	}
 }
