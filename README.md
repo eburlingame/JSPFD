@@ -15,7 +15,7 @@ moved and configured around the panel.
 
 ### Mockup 
 
-![Mockup](JSPFD/mockup/PFD.jpg)
+![Mockup](https://raw.githubusercontent.com/eburlingame/JSPFD/master/mockup/PFD.jpg)
 
 Included in the `/mockup` folder is a vector graphics mockup of the display. The JS implementation is close, but not the 
 same as the mockup template. 
