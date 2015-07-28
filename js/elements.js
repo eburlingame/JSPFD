@@ -55,16 +55,25 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative,
 	var y = location.y;
 	var wid = location.width;
 	var hei = location.height;
-	ctx.save();
 
-	if (leftAlign) 	ctx.rect(x - 0.2 * wid, y, 1.2 * wid, hei);
-	else 			ctx.rect(x, y, 1.2 * wid, hei);
+	var bugHeight = 50;
+	var bugWidth = 0.1;
+
+	ctx.save();
+	ctx.fillStyle = GUAGE_BACKGROUND;
+	if (leftAlign)
+	{	
+		ctx.rect(x - bugWidth * wid, y, (1 + bugWidth) * wid, hei);
+		ctx.fillRect(x - bugWidth * wid, y, (1 + bugWidth) * wid, hei);
+	}
+	else
+	{
+		ctx.rect(x, y, (1 + bugWidth) * wid, hei);
+		ctx.fillRect(x, y, (1 + bugWidth) * wid, hei);
+	}
 	ctx.clip();
 	
 	var numberToDraw = Math.floor(hei / scale + 0.5);
-
-	ctx.fillStyle = GUAGE_BACKGROUND
-	ctx.fillRect(x, y, wid, hei)
 
 	ctx.fillStyle = GUAGE_FOREGROUND;
 	ctx.font = fontSize + "px Arial"
@@ -103,8 +112,6 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative,
 		}
 	}
 
-	var bugHeight = 50;
-	var bugWidth = 0.1;
 	var diff = (value - bugValue) / smallTicks;
 	var newY = (y + hei / 2) + scale * (diff);
 	// console.log(bugValue);
@@ -116,7 +123,7 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative,
 		{
 			ctx.moveTo(x - wid * bugWidth * 0, newY - bugHeight / 2);
 			ctx.lineTo(x - wid * bugWidth * 1.0, newY - bugHeight / 2);
-			ctx.lineTo(x - wid * bugWidth * 0.5, newY);
+			ctx.lineTo(x - wid * bugWidth * 0.2, newY);
 			ctx.lineTo(x - wid * bugWidth * 1.0, newY + bugHeight / 2);
 			ctx.lineTo(x - wid * bugWidth * 0.0, newY + bugHeight / 2);
 		}
@@ -124,7 +131,7 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative,
 		{
 			ctx.moveTo(x + wid * 0.99 + wid * bugWidth * 0, newY - bugHeight / 2);
 			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 1.0, newY - bugHeight / 2);
-			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 0.5, newY);
+			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 0.2, newY);
 			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 1.0, newY + bugHeight / 2);
 			ctx.lineTo(x + wid * 0.99 + wid * bugWidth * 0.0, newY + bugHeight / 2);
 		}

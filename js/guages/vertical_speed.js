@@ -25,6 +25,7 @@ function VerticalSpeedIndicator(ctx, location, fontSize, data)
 		}
 
 		this.drawBackground(this.data.verticalSpeed);
+		this.drawBug(this.data.verticalSpeedBug)
 		// this.drawArrow(verticalSpeed);
 		this.drawPointer(verticalSpeed);
 	}
@@ -57,7 +58,7 @@ function VerticalSpeedIndicator(ctx, location, fontSize, data)
 
 		ctx.font = "15px Arial"
 		ctx.textAlign = "left";
-		list = [-2000, -1500, -1000, -750, -500, -250, 250, 500, 750, 1000, 1500, 2000];
+		list = [-2000, -1500, -1000, -500, -250, 250, 500, 1000, 1500, 2000];
 		for (var i = 0; i < list.length; i++)
 		{
 			var value = list[i];
@@ -114,6 +115,27 @@ function VerticalSpeedIndicator(ctx, location, fontSize, data)
 		ctx.lineTo(totalWidth, height);
 		ctx.lineTo(totalWidth * 0.8, height + arrowWidth);
 		ctx.lineTo(0, height + arrowWidth);
+		ctx.closePath();
+		ctx.fill();
+		ctx.restore();
+	}
+
+	this.drawBug = function(value)
+	{	
+		ctx.save();
+		ctx.translate(this.loc.x, this.loc.y + this.loc.height / 2);
+
+		var totalWidth = this.loc.width / 4;
+		var height = this.getYFromValue(value);
+		var arrowWidth = 0.35 * totalWidth;
+
+		ctx.fillStyle = BUG;
+		ctx.beginPath();
+		ctx.moveTo(totalWidth, height - arrowWidth); 
+		ctx.lineTo(totalWidth * 0.8, height - arrowWidth);
+		ctx.lineTo(totalWidth, height);
+		ctx.lineTo(totalWidth * 0.8, height + arrowWidth);
+		ctx.lineTo(totalWidth, height + arrowWidth);
 		ctx.closePath();
 		ctx.fill();
 		ctx.restore();

@@ -40,8 +40,6 @@ function HorizontalSituationIndicator(ctx, location, fontSize, data)
 		ctx.arc(0, 0, hei - 2, 0, 2*Math.PI);
 		ctx.stroke();
 
-
-
 		// Draw plane cross icon
 		var planeWidth = 20;	
 		ctx.fillStyle = GUAGE_FOREGROUND;

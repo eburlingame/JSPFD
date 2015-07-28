@@ -24,8 +24,11 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 	{
 		this.data = data;
 		var feetPerSec = this.data.verticalSpeed;
+		var feetPerSecBug = this.data.verticalSpeedBug;
 		var nmPerHour = this.data.groundSpeed;
+
 		this.feetPerNm = (feetPerSec / nmPerHour) * (60.0);
+		this.feetPerNmBug = (feetPerSecBug / nmPerHour) * (60.0);
 
 
   		if (Math.floor(this.lastTrueCourse) != Math.floor(this.data.trueCourse))
@@ -66,6 +69,12 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 		ctx.fillStyle = BACKGROUND;
 		ctx.fillRect(0, 0, wid, hei);
 
+		ctx.strokeStyle = EARTH;
+		ctx.beginPath();
+		ctx.moveTo(0, hei - 1);
+		ctx.lineTo(wid, hei - 1);
+		ctx.stroke();
+
 		ctx.restore();
 	}
 
@@ -82,10 +91,7 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 		ctx.clip();
 		ctx.translate(x, y);
 
-		ctx.strokeStyle = GUAGE_FOREGROUND;
-		ctx.beginPath();
-		ctx.lineWidth = 1;
-
+		// Calculate plane's height in pixels if we are close to the ground
 		var planeMoveThreshold = 100; // feet in altitude
 		var planeHeightPixels = (hei / 2);
 		this.planeHeightPixels = planeHeightPixels;
@@ -95,20 +101,35 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 			planeHeightPixels = hei - planeHeightPixels;
 		}
 
+		// Calculate vertical and horizontal scales
 		var feetPerPixel = (this.data.altitude) / (planeHeightPixels); // feet per pixel
 		this.verticalScale = feetPerPixel; // feet per pixel
 		var widthInNm = (wid * 0.6) / this.horizontalScale; // nm
+
+
+		// Draw vertical speed bug
+		ctx.strokeStyle = BUG;
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.setLineDash([20, 5]);
+
+		var newY = - this.feetPerNmBug * widthInNm / feetPerPixel;
+		ctx.moveTo(wid * 0.2, planeHeightPixels);
+		ctx.lineTo(wid * 0.8, planeHeightPixels + newY);
+		ctx.stroke();
+
+
+		// Draw current vertical path line
+		ctx.strokeStyle = GUAGE_FOREGROUND;
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+
 		var newY = - this.feetPerNm * widthInNm / feetPerPixel;
 		ctx.moveTo(wid * 0.2, planeHeightPixels);
 		ctx.lineTo(wid * 0.8, planeHeightPixels + newY);
 		ctx.stroke();
 
-		ctx.strokeStyle = EARTH;
-		ctx.beginPath();
-		ctx.moveTo(0, hei - 1);
-		ctx.lineTo(wid, hei - 1);
-		ctx.stroke();
-
+		// Draw plane image
 		if (this.img != null)
 		{
 			ctx.drawImage(this.img, wid * 0.2 - 30, planeHeightPixels - 10, 30, 10);
