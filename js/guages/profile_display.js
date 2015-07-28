@@ -154,7 +154,7 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 		{
 			// ctx.drawImage(this.img, 178, 61, 30, 10);
 		}
-		this.img.src = "Plane_icon.png";
+		this.img.src = "img/Plane_icon.png";
 	}
 	this.loadImage();
 }
