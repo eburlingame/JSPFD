@@ -48,7 +48,8 @@ function drawTickerDigit(list, value, scrollThreshold, digitSpacing, location, f
 }
 
 // Scale in pixels per small tick
-function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, scale, value)
+// Negative is negative allowed
+function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, negative, scale, value)
 {
 	var x = location.x;
 	var y = location.y;
@@ -72,7 +73,7 @@ function drawTape(location, fontSize, leftAlign, bigTicks, smallTicks, scale, va
 		var relValue = Math.floor((value - smallTicks * - i) / smallTicks) * smallTicks
 		var diff = (value - relValue) / smallTicks;
 		var newY = (y + hei / 2) + scale * (diff);
-		if (newY + fontSize > y && newY - fontSize < y + hei)
+		if (newY + fontSize > y && newY - fontSize < y + hei && (negative || relValue >= 0))
 		{
 			if (relValue % bigTicks == 0)
 			{

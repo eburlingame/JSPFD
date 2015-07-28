@@ -65,8 +65,8 @@ function AirspeedTicker(ctx, location, data)
   		loc.x -= (1 / 3 * boxWidth) + 5;
   		drawTickerDigit(onesList, tens, 0.2, 30, loc, 42);
 
-  		onesList[0] = "";
   		// Draw hundreds digit place
+  		onesList[0] = "";
   		loc.x -= (1 / 3 * boxWidth) + 5;
   		drawTickerDigit(onesList, hundreds, 0.01, 20, loc, 42);
 	}
@@ -85,7 +85,7 @@ function AirspeedTape(ctx, location, data)
 
 	this.draw = function()
 	{
-		//       location, 		fontSize, leftAlign, bigTicks, smallTicks, scale, value
-		drawTape(this.loc,      20,      false,      100,     10,        50,    data.airspeed)
+		//       location, 		fontSize, leftAlign, bigTicks, smallTicks, negative, scale, value
+		drawTape(this.loc,      20,      false,      100,      10,         false,    50,    data.airspeed)
 	}
 }
