@@ -3,8 +3,8 @@
 <head>
 
 </head>
-<body style='background-color: black; text-align: center'>
-	<canvas id="a" width="1050" height="700"></canvas>
+<body style='background-color: white; text-align: center'>
+	<canvas id="a" width="1050" height="810"></canvas>
 </body>
 </html>
 <script src="js/jquery-1.11.3.min.js"></script>
@@ -17,6 +17,7 @@
 <script src="js/guages/attitude_indicator.js"></script>
 <script src="js/guages/vertical_speed.js"></script>
 <script src="js/guages/profile_display.js"></script>
+<script src="js/guages/horizontal_situation.js"></script>
 <script type="text/javascript">
 
 	var GUAGE_BACKGROUND = "#191921";
@@ -24,7 +25,8 @@
 	var BACKGROUND = "#000";
 	var GROUND = "#752E00";
 	var SKY = "#0072B9";
-	var EARTH = "#0B6739";
+	var EARTH = "#0B6739"; 
+  var BUG = "#F844F8";
 
 	var cvs = document.getElementById("a");
   	var ctx = cvs.getContext("2d");
@@ -105,9 +107,19 @@
   		"y": 10 
   	}, 
   	20,  // Horizontal scale in nm for the whole width
-  	70, // Terrain resolution in number of steps to draw
+  	10, // Terrain resolution in number of steps to draw
   	50,   // Font size in pixels
   	data);
+
+    guages[7] = new HorizontalSituationIndicator(ctx, 
+    {
+      "width": 675,
+      "height": 270,
+      "x": 115,
+      "y": 525 
+    }, 
+    40, // Font size in pixels
+    data);
 
   	var mousePos = {x: 0, y: 0};
 	cvs.addEventListener('mousemove', function(evt) {
@@ -120,13 +132,20 @@
 
 	data.latitude = 48.111435;
 	data.longitude = -121.117852;
-	data.track = 180;
+
 	data.trueCourse = 180;
 	data.heading = 180;
+  data.headingBug = 150;
+
 	data.groundSpeed = 100;
 	data.airspeed = 100;
+  data.airspeedBug = 126.58;
+
 	data.altitude = 12000;
+  data.altitudeBug = 12200;
 	data.verticalSpeed = 0;
+  data.verticalSpeedBug = 0;
+
 	data.bankAngle = 0;
 	data.pitchAngle = 20;
 	data.turnCoordinationAngle = 0;
@@ -135,7 +154,7 @@
 	value = lastValue = 100;
 	rate = 10
 	vs_acc = 0;
-	crs_spd = 0.0;
+	crs_spd = 1.0;
 
 	var now = then = delta = new Date().getTime();
 	var render = function() 
@@ -148,7 +167,9 @@
 
    		data.verticalSpeed += vs_acc * delta
    		data.altitude += (data.verticalSpeed / 60.0) * delta;
-   		data.trueCourse += crs_spd * delta; 
+
+      // data.trueCourse += crs_spd * delta; 
+   		data.heading += crs_spd * delta; 
 
    		updateAndDraw();
 
