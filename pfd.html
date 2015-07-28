@@ -4,11 +4,14 @@
 
 </head>
 <body style='background-color: black; text-align: center'>
-	<canvas id="a" width="1050" height="1000"></canvas>
+	<canvas id="a" width="1050" height="700"></canvas>
 </body>
 </html>
 <script src="jquery-1.11.3.min.js"></script>
 <script src="elements.js"></script>
+<script src="geodesy/latlon-spherical.js"></script>
+<script src="terrain_data.js"></script>
+
 <script src="altimeter_ticker.js"></script>
 <script src="airspeed_ticker.js"></script>
 <script src="attitude_indicator.js"></script>
@@ -41,7 +44,7 @@
   		"x": 223,
   		"y": 180
   	}, 
-  	5,
+  	5, // Angle scale in pixels per degree
   	data);
 
   	// Altimeter digits ticker
@@ -91,7 +94,7 @@
   		"x": 920,
   		"y": guages[1].loc.y + guages[1].loc.height / 2 - 200 
   	}, 
-  	33,
+  	33, // font size in pixels
   	data);
 
   	guages[6] = new ProfileDisplay(ctx, 
@@ -101,8 +104,9 @@
   		"x": 0,
   		"y": 10 
   	}, 
-  	200, // Pixels per nm
-  	50,
+  	20,  // Horizontal scale in nm for the whole width
+  	70, // Terrain resolution in number of steps to draw
+  	50,   // Font size in pixels
   	data);
 
   	var mousePos = {x: 0, y: 0};
@@ -114,21 +118,24 @@
 	ctx.fillStyle = BACKGROUND;
   	ctx.fillRect(0, 0, 1100, 1000);
 
-	data.latitude = 47.607366;
-	data.longitude = -121.986403;
+	data.latitude = 48.111435;
+	data.longitude = -121.117852;
 	data.track = 180;
+	data.trueCourse = 180;
 	data.heading = 180;
 	data.groundSpeed = 100;
 	data.airspeed = 100;
-	data.altitude = 500;
-	data.verticalSpeed = -800;
+	data.altitude = 12000;
+	data.verticalSpeed = 0;
 	data.bankAngle = 0;
 	data.pitchAngle = 20;
 	data.turnCoordinationAngle = 0;
+	data.terrainAhead = [];
 
 	value = lastValue = 100;
 	rate = 10
-	vs_acc = 10;
+	vs_acc = 0;
+	crs_spd = 0.0;
 
 	var now = then = delta = new Date().getTime();
 	var render = function() 
@@ -141,6 +148,7 @@
 
    		data.verticalSpeed += vs_acc * delta
    		data.altitude += (data.verticalSpeed / 60.0) * delta;
+   		data.trueCourse += crs_spd * delta; 
 
    		updateAndDraw();
 
@@ -150,7 +158,6 @@
 
 	// Start the redrawing process
 	render();
-
 
 	function updateAndDraw()
 	{  		
@@ -168,6 +175,5 @@
           y: evt.clientY - rect.top
         };
       }
-	
 
 </script>
