@@ -2,7 +2,6 @@
 
 JSPFD is a mockup of an aircraft Primary Flight Display written in Javascript on the HTML5 Canvas. 
 
-
 ## Overview
 
 The display does not simulate the display of any particular aircraft, but rather one that is similar to 
@@ -23,11 +22,10 @@ same as the mockup template.
 
 ### Guages
 
-Guages are individual elements that can be drawn. All of them require the canvas 2D context to be passed in (ctx), and a
+Guages are individual elements that can be drawn. All of them require the canvas 2D context (`ctx`) to be passed in, and a
 location object that includes `width, height, x, y` in pixels.
 
 Currently implemented are:
-
 - Airspeed tape and ticker
 - Altitude tape and ticker
 - Vertical speed gauge
