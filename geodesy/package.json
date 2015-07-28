@@ -1,0 +1,53 @@
+{
+    "name": "geodesy",
+    "description": "Libraries of geodesy functions",
+    "homepage": "http://www.movable-type.co.uk/scripts/latlong.html",
+    "repository": { "type": "git", "url": "https://github.com/chrisveness/geodesy" },
+    "keywords": [ "geodesy", "latitude", "longitude", "distance", "bearing", "haversine", "vincenty", "rhumb", "ellipsoid", "datum", "wgs84", "utm", "mgrs" ],
+    "author": "Chris Veness",
+    "version": "1.0.2",
+    "license": "MIT",
+    "main": "npm.js",
+    "bugs": "https://github.com/chrisveness/geodesy/issues",
+    "scripts": {
+        "test": "tape test.js | tap-spec",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "eslint": "^0.20.0",
+        "tap-spec": "^3.0.0",
+        "tape": "^4.0.0"
+    },
+    "testling": {
+        "files": "test.js",
+        "browsers": [
+            "iexplore/7..latest",
+            "chrome/26..latest",
+            "firefox/21..latest",
+            "safari/4..latest",
+            "opera/11.5..latest",
+            "iphone/6..latest",
+            "ipad/6..latest",
+            "android-browser/4.2..latest"
+        ]
+    },
+    "eslintConfig": {
+        "env": {
+            "node": true,
+            "amd": true
+        },
+        "rules": {
+            "curly": [ 2, "multi-line" ],
+            "eqeqeq": 0,
+            "quotes": [ 2, "single", "avoid-escape" ],
+            "key-spacing": 0,
+            "new-cap": [ 2, { "capIsNew": 1, "capIsNewExceptions": [ "LatLon", "OsGridRef", "Vector3d" ] } ],
+            "no-extend-native": 0,
+            "no-multi-spaces": 0,
+            "no-redeclare": 1,
+            "no-unused-vars": 1,
+            "space-infix-ops": 0,
+            "yoda": [ 2, "never", { "exceptRange": true } ]
+        }
+    }
+}
