@@ -29,15 +29,16 @@
   var BUG = "#F844F8";
 
 	var cvs = document.getElementById("a");
-	var ctx = cvs.getContext("2d");
+  	var ctx = cvs.getContext("2d");
 
-  var data = {}
-  var rawData = {};
+  	var data = {
+  		"altitude" : 1200,
+  		"airspeed" : 50
+  	}
 
-	guages = []
 
-  function initGuages()
-  {
+  	guages = []
+
   	guages[0] = new AttitudeIndicator(ctx, 
   	{
   		"width": 400,
@@ -119,107 +120,81 @@
     }, 
     40, // Font size in pixels
     data);
-  }
-  initGuages();
 
-	// Reset Canvas
-ctx.fillStyle = BACKGROUND;
-ctx.fillRect(0, 0, 1100, 1000);
+  	var mousePos = {x: 0, y: 0};
+	cvs.addEventListener('mousemove', function(evt) {
+		mousePos = getMousePos(cvs, evt);
+	}, false);
 
-function updateData()
-{
-  // Initalize data
-  data.latitude = rawData.latitude / 1;
-  data.longitide = rawData.longitide / 1;
+  	// Reset Canvas
+	ctx.fillStyle = BACKGROUND;
+  	ctx.fillRect(0, 0, 1100, 1000);
 
-  data.trueCourse = rawData.heading_magnetic;
-  data.heading = rawData.heading_magnetic;
-  data.headingBug = 180;
+	data.latitude = 48.111435;
+	data.longitude = -121.117852;
 
-  data.groundSpeed = rawData.ground_speed;
-  data.airspeed = rawData.airspeed;
-  data.airspeedBug = 120;
+	data.trueCourse = 180;
+	data.heading = 180;
+  data.headingBug = 150;
 
-  data.altitude = rawData.altitude;
-  data.altitudeBug = 4000;
-  data.verticalSpeed = rawData.vertical_speed;
-  data.verticalSpeedBug = -500;
+	data.groundSpeed = 100;
+	data.airspeed = 100;
+  data.airspeedBug = 126.58;
 
-  data.bankAngle = rawData.bank;
-  data.pitchAngle = rawData.pitch;
-  data.turnCoordinationAngle = 0;
-  data.terrainAhead = [];
-}
+	data.altitude = 12000;
+  data.altitudeBug = 12200;
+	data.verticalSpeed = 1000;
+  data.verticalSpeedBug = 2000;
 
+	data.bankAngle = 0;
+	data.pitchAngle = 20;
+	data.turnCoordinationAngle = 0;
+	data.terrainAhead = [];
 
+	value = lastValue = 100;
+	rate = 10
+	vs_acc = 100;
+	crs_spd = 1.0;
 
-value = lastValue = 100;
-rate = 10
+	var now = then = delta = new Date().getTime();
+	var render = function() 
+	{   
+		now = new Date().getTime();
+    	delta = (now - then) / 1000.0;
+   		then = now;
+   		lastValue = value;
+   		value += delta * rate;
 
-var now = then = delta = new Date().getTime();
-var render = function() 
-{   
-	  now = new Date().getTime();
-  	delta = (now - then) / 1000.0;
- 		then = now;
- 		lastValue = value;
- 		value += delta * rate;
+   		data.verticalSpeed += vs_acc * delta
+   		data.altitude += (data.verticalSpeed / 60.0) * delta;
 
- 		updateAndDraw();
+      // data.trueCourse += crs_spd * delta; 
+   		data.heading += crs_spd * delta; 
 
-    // Redraw
-    requestAnimationFrame(render);
-};
+   		updateAndDraw();
 
-// Start the redrawing process
-render();
+	    // Redraw
+	    requestAnimationFrame(render);
+	};
 
-function updateAndDraw()
-{  		
-	for (var i = 0; i < guages.length; i++)
-		{
-  		guages[i].update(data);
-  		guages[i].draw();
-		}
-}
+	// Start the redrawing process
+	render();
 
+	function updateAndDraw()
+	{  		
+		for (var i = 0; i < guages.length; i++)
+  		{
+	  		guages[i].update(data);
+	  		guages[i].draw();
+  		}
+	}
 
+	function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
 
-function openConnection()
-{
-  var self = this;
-  var ws = new WebSocket("ws://localhost:4649/data");
-  ws.onopen = function()
-  {
-    send();
-  }
-
-  function send()
-  {
-    ws.send("getdata");
-    setTimeout(send, 90);
-  }
-
-  ws.onmessage = function (event) 
-  {
-    rawData = JSON.parse(event.data);
-    updateData();
-  }
-} 
-openConnection();
-
-
-var mousePos = {x: 0, y: 0};
-cvs.addEventListener('mousemove', function(evt) 
-{
-  mousePos = getMousePos(cvs, evt);
-}, false);
-
-function getMousePos(canvas, evt) {
-      var rect = canvas.getBoundingClientRect();
-      return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-      };
-    }
 </script>
