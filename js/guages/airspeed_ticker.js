@@ -48,7 +48,7 @@ function AirspeedTicker(ctx, location, data)
 	  	{
 	  		airspeed = 0;
 	  	}
-  		var ones = airspeed;
+  		var ones = airspeed / 1;
   		var tens = airspeed / 10; 
   		var hundreds = airspeed / 100;
 
