@@ -1,12 +1,13 @@
 
 // horizontalScale in nm per width
 // terrainSteps in number of steps of terrain to draw
-function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, data)
+function ProfileDisplay(ctx, location, terrainOn, horizontalScale, terrainSteps, fontSize, data)
 {
 	this.ctx = ctx;
 	this.data = data;
 	this.loc = location;
 	this.fontSize = fontSize;
+	this.terrainOn = terrainOn;
 	this.max = 2000;
 	this.image = null;
 
@@ -31,7 +32,7 @@ function ProfileDisplay(ctx, location, horizontalScale, terrainSteps, fontSize, 
 		this.feetPerNmBug = (feetPerSecBug / nmPerHour) * (60.0);
 
 
-  		if (Math.floor(this.lastTrueCourse) != Math.floor(this.data.trueCourse))
+  		if (this.terrainOn && Math.floor(this.lastTrueCourse) != Math.floor(this.data.trueCourse))
   		{
   			var nmRight = 0.8 * this.loc.width / (this.horizontalScale); // pixels / (pixels / nm)
   			var nmLeft = 0.2 * this.loc.width / (this.horizontalScale); // pixels / (pixels / nm)

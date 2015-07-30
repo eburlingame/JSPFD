@@ -11,6 +11,7 @@
 <script src="js/elements.js"></script>
 <script src="geodesy/latlon-spherical.js"></script>
 <script src="js/terrain_data.js"></script>
+<script src="js/flightdata.js"></script>
 
 <script src="js/guages/altimeter_ticker.js"></script>
 <script src="js/guages/airspeed_ticker.js"></script>
@@ -126,32 +127,6 @@
 ctx.fillStyle = BACKGROUND;
 ctx.fillRect(0, 0, 1100, 1000);
 
-function updateData()
-{
-  // Initalize data
-  data.latitude = rawData.latitude / 1;
-  data.longitide = rawData.longitide / 1;
-
-  data.trueCourse = rawData.heading_magnetic;
-  data.heading = rawData.heading_magnetic;
-  data.headingBug = 180;
-
-  data.groundSpeed = rawData.ground_speed;
-  data.airspeed = rawData.airspeed;
-  data.airspeedBug = 120;
-
-  data.altitude = rawData.altitude;
-  data.altitudeBug = 4000;
-  data.verticalSpeed = rawData.vertical_speed;
-  data.verticalSpeedBug = -500;
-
-  data.bankAngle = rawData.bank;
-  data.pitchAngle = rawData.pitch;
-  data.turnCoordinationAngle = 0;
-  data.terrainAhead = [];
-}
-
-
 
 value = lastValue = 100;
 rate = 10
@@ -182,31 +157,6 @@ function updateAndDraw()
   		guages[i].draw();
 		}
 }
-
-
-
-function openConnection()
-{
-  var self = this;
-  var ws = new WebSocket("ws://localhost:4649/data");
-  ws.onopen = function()
-  {
-    send();
-  }
-
-  function send()
-  {
-    ws.send("getdata");
-    setTimeout(send, 90);
-  }
-
-  ws.onmessage = function (event) 
-  {
-    rawData = JSON.parse(event.data);
-    updateData();
-  }
-} 
-openConnection();
 
 
 var mousePos = {x: 0, y: 0};
