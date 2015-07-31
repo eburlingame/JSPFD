@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<div id="write" />
+</body>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+var ws = new WebSocket("ws://localhost:4649/data");
+ws.onopen = function()
+{
+	send();
+}
+
+function send()
+{
+	ws.send("getdata");
+	setTimeout(send, 50);
+}
+
+ws.onmessage = function (event) {
+  // console.log((event.data));
+  // console.log(JSON.parse(event.data));
+  $("#write").text(event.data);
+}
+</script>
+</html>
