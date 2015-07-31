@@ -88,6 +88,6 @@ function AirspeedTape(ctx, location, data)
 		//       location, 		fontSize, leftAlign, bigTicks,   
 		drawTape(this.loc,      20,      false,      100,   
 		//  smallTicks, negative, scale, value,           bugValue
-			10,         false,    50,    data.airspeed,   data.airspeedBug);
+			10,         false,    50,    this.data.airspeed,   this.data.airspeedBug);
 	}
 }
