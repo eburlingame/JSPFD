@@ -28,7 +28,6 @@ function TerrainData()
 	{
   		var elevation = data.USGS_Elevation_Point_Query_Service.Elevation_Query.Elevation;
   		this.elevationArr[id].elevation = elevation;
-  		// console.log(this.elevationArr);
 	}
 
 	this.getRelativePoint = function(latitude, longitude, bearing, nm)

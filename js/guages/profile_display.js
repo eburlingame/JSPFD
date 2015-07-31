@@ -20,7 +20,6 @@ function ProfileDisplay(ctx, location, terrainOn, horizontalScale, terrainSteps,
   	this.lastTrueCourse = 0;
 	this.data.terrainAhead = this.terrain.elevationArr;
 
-
 	this.update = function(data) 
 	{
 		this.data = data;
@@ -30,7 +29,6 @@ function ProfileDisplay(ctx, location, terrainOn, horizontalScale, terrainSteps,
 
 		this.feetPerNm = (feetPerSec / nmPerHour) * (60.0);
 		this.feetPerNmBug = (feetPerSecBug / nmPerHour) * (60.0);
-
 
   		if (this.terrainOn && Math.floor(this.lastTrueCourse) != Math.floor(this.data.trueCourse))
   		{
@@ -43,7 +41,6 @@ function ProfileDisplay(ctx, location, terrainOn, horizontalScale, terrainSteps,
   											nmRight, 
   											this.terrainResolution);
 	  		this.lastTrueCourse = this.data.trueCourse;	
-			this.data.terrainAhead = this.terrain.elevationArr;
   		}
 	}
 
