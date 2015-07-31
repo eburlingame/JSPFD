@@ -11,6 +11,7 @@
 <script src="js/elements.js"></script>
 <script src="geodesy/latlon-spherical.js"></script>
 <script src="js/terrain_data.js"></script>
+<script src="js/flightdata.js"></script>
 
 <script src="js/guages/altimeter_ticker.js"></script>
 <script src="js/guages/airspeed_ticker.js"></script>
@@ -29,16 +30,15 @@
   var BUG = "#F844F8";
 
 	var cvs = document.getElementById("a");
-  	var ctx = cvs.getContext("2d");
+	var ctx = cvs.getContext("2d");
 
-  	var data = {
-  		"altitude" : 1200,
-  		"airspeed" : 50
-  	}
+  var data = {}
+  var rawData = {};
 
+	guages = []
 
-  	guages = []
-
+  function initGuages()
+  {
   	guages[0] = new AttitudeIndicator(ctx, 
   	{
   		"width": 400,
@@ -120,81 +120,56 @@
     }, 
     40, // Font size in pixels
     data);
+  }
+  initGuages();
 
-  	var mousePos = {x: 0, y: 0};
-	cvs.addEventListener('mousemove', function(evt) {
-		mousePos = getMousePos(cvs, evt);
-	}, false);
+	// Reset Canvas
+ctx.fillStyle = BACKGROUND;
+ctx.fillRect(0, 0, 1100, 1000);
 
-  	// Reset Canvas
-	ctx.fillStyle = BACKGROUND;
-  	ctx.fillRect(0, 0, 1100, 1000);
 
-	data.latitude = 48.111435;
-	data.longitude = -121.117852;
+value = lastValue = 100;
+rate = 10
 
-	data.trueCourse = 180;
-	data.heading = 180;
-  data.headingBug = 150;
+var now = then = delta = new Date().getTime();
+var render = function() 
+{   
+	  now = new Date().getTime();
+  	delta = (now - then) / 1000.0;
+ 		then = now;
+ 		lastValue = value;
+ 		value += delta * rate;
 
-	data.groundSpeed = 100;
-	data.airspeed = 100;
-  data.airspeedBug = 126.58;
+ 		updateAndDraw();
 
-	data.altitude = 12000;
-  data.altitudeBug = 12200;
-	data.verticalSpeed = 1000;
-  data.verticalSpeedBug = 2000;
+    // Redraw
+    requestAnimationFrame(render);
+};
 
-	data.bankAngle = 0;
-	data.pitchAngle = 20;
-	data.turnCoordinationAngle = 0;
-	data.terrainAhead = [];
+// Start the redrawing process
+render();
 
-	value = lastValue = 100;
-	rate = 10
-	vs_acc = 100;
-	crs_spd = 1.0;
+function updateAndDraw()
+{  		
+	for (var i = 0; i < guages.length; i++)
+		{
+  		guages[i].update(data);
+  		guages[i].draw();
+		}
+}
 
-	var now = then = delta = new Date().getTime();
-	var render = function() 
-	{   
-		now = new Date().getTime();
-    	delta = (now - then) / 1000.0;
-   		then = now;
-   		lastValue = value;
-   		value += delta * rate;
 
-   		data.verticalSpeed += vs_acc * delta
-   		data.altitude += (data.verticalSpeed / 60.0) * delta;
+var mousePos = {x: 0, y: 0};
+cvs.addEventListener('mousemove', function(evt) 
+{
+  mousePos = getMousePos(cvs, evt);
+}, false);
 
-      // data.trueCourse += crs_spd * delta; 
-   		data.heading += crs_spd * delta; 
-
-   		updateAndDraw();
-
-	    // Redraw
-	    requestAnimationFrame(render);
-	};
-
-	// Start the redrawing process
-	render();
-
-	function updateAndDraw()
-	{  		
-		for (var i = 0; i < guages.length; i++)
-  		{
-	  		guages[i].update(data);
-	  		guages[i].draw();
-  		}
-	}
-
-	function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-          x: evt.clientX - rect.left,
-          y: evt.clientY - rect.top
-        };
-      }
-
+function getMousePos(canvas, evt) {
+      var rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
 </script>

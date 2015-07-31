@@ -48,7 +48,7 @@ function AirspeedTicker(ctx, location, data)
 	  	{
 	  		airspeed = 0;
 	  	}
-  		var ones = airspeed;
+  		var ones = airspeed / 1;
   		var tens = airspeed / 10; 
   		var hundreds = airspeed / 100;
 
@@ -88,6 +88,6 @@ function AirspeedTape(ctx, location, data)
 		//       location, 		fontSize, leftAlign, bigTicks,   
 		drawTape(this.loc,      20,      false,      100,   
 		//  smallTicks, negative, scale, value,           bugValue
-			10,         false,    50,    data.airspeed,   data.airspeedBug);
+			10,         false,    50,    this.data.airspeed,   this.data.airspeedBug);
 	}
 }
