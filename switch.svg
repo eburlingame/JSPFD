@@ -25,12 +25,12 @@
      id="base"
      pagecolor="#ffffff"
      bordercolor="#666666"
-     borderopacity="0"
+     borderopacity="1"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="74.554179"
-     inkscape:cy="221.35607"
+     inkscape:zoom="2.8"
+     inkscape:cx="51.48411"
+     inkscape:cy="160.92551"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -38,7 +38,22 @@
      inkscape:window-height="1147"
      inkscape:window-x="1912"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="0,177.16535"
+       orientation="0,1"
+       id="guide4693"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="88.582672,0"
+       orientation="1,0"
+       id="guide4695"
+       inkscape:label=""
+       inkscape:color="rgb(0,0,255)" />
+  </sodipodi:namedview>
   <metadata
      id="metadata4340">
     <rdf:RDF>
@@ -60,18 +75,18 @@
     <circle
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.79999924;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:185;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="path4883"
-       cx="94.642853"
-       cy="790.21936"
+       cx="92.31617"
+       cy="795.16241"
        r="14.798821" />
     <circle
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#010000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:18.79999924;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:185;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="path4885"
-       cx="91.071419"
-       cy="869.14795"
+       cx="88.744736"
+       cy="874.091"
        r="29.867907" />
     <g
        id="g4899"
-       transform="matrix(0.64414645,0,0,0.62320621,34.526816,317.30822)">
+       transform="matrix(0.64414645,0,0,0.62320621,30.547371,322.8195)">
       <circle
          r="41.526978"
          cy="750.93365"
