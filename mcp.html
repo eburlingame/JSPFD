@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body style='background-color: white; text-align: center'>
+  <div class='background'>
+    <div class='guage' id='course-L'> 000 </div>
+    <div class='guage' id='ias-mach'> 350 </div>
+    <div class='guage' id='heading'> 000 </div>
+    <div class='guage' id='altitude'> 0 </div>
+    <div class='guage' id='vert-speed'> -1000 </div>
+    <div class='guage' id='course-R'> 000 </div>
+    <div id='at-arm'> </div>
+    <div id='course-knob-L'> </div>
+  </div>
+
+</body>
+</html>
+<!-- <script src="js/easeljs-0.8.2.min.js"></script> -->
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.mousewheel.js"></script>
+
+<script type="text/javascript">
+
+  var course = 0;
+  function courseLscroll(event)
+  {
+    var dir = event.originalEvent.wheelDelta / 120 * 5;
+    console.log(dir);
+    course = (course + dir) % 360;
+    $("#course-knob-L").css("transform", "rotate(" + course + "deg)");
+    var txt = formatNumberLength(course, 3);
+    $("#course-L").text(txt);
+  }
+  $("#course-knob-L").on("mousewheel", courseLscroll)
+
+  var at_armed = false;
+  function at_arm()
+  {
+    at_armed = !at_armed;
+    if (at_armed)
+      $("#at-arm").css("transform", "rotate(0deg)");
+    else
+      $("#at-arm").css("transform", "rotate(180deg)");
+  }
+  $("#at-arm").on("click", at_arm);
+
+  function formatNumberLength(num, length) {
+      var r = "" + num;
+      while (r.length < length) {
+          r = "0" + r;
+      }
+      return r;
+  }
+
+  function printPos(event)
+  {
+    console.log(event.offsetX, event.offsetY);
+  }
+  $(".background").on("click", printPos);
+
+  function getMousePos(canvas, evt) {
+      var rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+</script>

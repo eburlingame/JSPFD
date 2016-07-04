@@ -1,0 +1,86 @@
+
+.background
+{
+	background-image: url('../img/mcp_back.png');
+    background-color: #FFF;
+	width: 1200px;
+	height: 195px;
+	background-size: 1200px 195px;
+	margin: auto;
+}
+
+.guage
+{
+	position: relative;
+	font-family: "Segment7";
+	font-size: 25px;
+	color: white;
+	float: left;
+	text-align: right;
+	width: 100px;
+}
+
+#course-L
+{
+	left: 2px; top: 34px;
+}
+
+#course-R
+{
+	left: 543px; top: 34px;
+}
+
+#ias-mach
+{
+	left: 140px; top: 34px;
+}
+
+#heading
+{
+	left: 210px; top: 34px;
+}
+
+#altitude
+{
+	left: 315px; top: 34px;
+}
+
+#vert-speed
+{
+	left: 365px; top: 34px;
+}
+
+#at-arm
+{
+	background-image: url('../img/switch.png');
+	width: 50px;
+	height: 100px;
+	background-size: 50px 100px;
+	position: relative;
+	left: 167px;
+	top: 14px;
+}
+
+#course-knob
+{
+	background-image: url('../img/indexed-knob.png');
+	width: 40px;
+	height: 40px;
+	background-size: 40px 40px;
+	position: relative;
+	left: 39px;
+	top: -18px;
+	transform: rotate(7deg);
+}
+
+#course-knob-L
+{
+	background-image: url('../img/indexed-knob.png');
+	width: 40px;
+	height: 40px;
+	background-size: 40px 40px;
+	position: relative;
+	left: 39px;
+	top: -18px;
+	transform: rotate(7deg);
+}
