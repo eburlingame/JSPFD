@@ -27,6 +27,22 @@
 	width: 100px;
 }
 
+#diseng_switch
+{
+	position: absolute;
+	background-image: url('../img/diseng_bar.png');
+	width: 140px;
+	height: 39px;
+	background-size: 140px 39px;	
+	position: absolute;
+	left: 902px;
+	top: 150px;
+}
+#diseng_switch.on
+{
+	top: 160px;
+}
+
 #course_L
 {
 	left: 5px; top: 35px;
@@ -116,7 +132,7 @@
 
 #course_knob_R
 {
-	left: 1120px;
+	left: 1118px;
 	top: 80px;
 }
 
