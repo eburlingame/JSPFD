@@ -152,6 +152,17 @@
   // Start the redrawing process
   render();
 
+  // Init gamepads (joysticks)
+  var arrayGP = navigator.getGamepads();
+  var gamepad = null;
+  var lastX = 0, lastY = 0, lastThrottle = 1;
+  if (arrayGP[0] != null)
+  {
+    gamepad = arrayGP[0];
+    console.log("Joystick connected");
+    console.log(gamepad);
+  }
+
   // Updates the guages with new data and draws them
   function updateAndDraw()
   {     
@@ -160,8 +171,23 @@
       guages[i].update(data.getData());
       guages[i].draw();
     }
+    // Poll gamepad for changes
+    if (gamepad != null)
+    {
+      gamepad = navigator.getGamepads()[0];
+      var x = -gamepad.axes[0];
+      var y = gamepad.axes[1];
+      var t = 1 - (gamepad.axes[6] + 1) / 2;
+      if (x != lastX || y != lastY || t != lastThrottle)
+      {
+        data.sim.setControls(y, x, t);
+        lastX = x; lastY = y; lastThrottle = t;
+      }
+    }
+
   }
 
+  // Listen for mouse move (change to mouse mode)
   cvs.addEventListener('mousemove', function(evt) {
     var mousePos = getMousePos(cvs, evt);
 
@@ -177,6 +203,7 @@
       y: evt.clientY - rect.top
     };
   }
+
 
 
 </script>
