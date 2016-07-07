@@ -12,7 +12,6 @@ function fps2fpm(sec)
 	return sec * 60;
 }
 
-
 function FlightSim()
 {
 	var self = this;
@@ -56,15 +55,20 @@ function FlightSim()
 	self.alpha_r = 0; // Roll angular acceleration (degrees per second^2)
 
 	// Calibration scalars
-	self.C_T = 0.4; // Throttle force scalar
-	self.C_D = 0.0003; // Drag force scalar
-	self.C_L = 0.0005; // Lift function
+	self.C_T = 1.5; // Throttle force scalar
+	self.C_D = 0.0000001; // Drag force scalar
+	self.C_L = 0.000005; // Lift function
 	self.C_E = 0.1; // Elevator torque scalar
+
 	self.C_PD = 1; // Pitch dampening scalar
 	self.C_VD = 1; // Vertical dampening scalar
 
 	self.C_A = 20; // Alerion torque scalar
-	self.C_AD = 0.1; // Roll dampening scalar
+	self.C_AD = 1; // Roll dampening scalar
+	self.C_theta_rTD = 0.05;
+
+	self.C_theta_aD = 0.01; // Pitch angle dampening scalar
+	self.C_theta_rD = 0.01; // Roll angle dampening scalar
 
 	self.G = 0.1; // Gravitational force (mg)
 
@@ -85,17 +89,17 @@ function FlightSim()
 	{
 		// Update pitch angle acceleration, velocity, and position
 		self.alpha_a = self.C_E * self.I_e * self.V_a - self.C_PD * self.omega_a;
-		self.omega_a += self.alpha_a * dt;
+		self.omega_a += self.alpha_a * dt - self.C_theta_aD * self.theta_a;
 		self.theta_a += self.omega_a * dt;
 
 		// Update roll angle acceleration, velocity, and position
-		self.alpha_r = self.C_A * self.I_a - self.C_AD * self.omega_r;
+		self.alpha_r = self.C_A * self.I_a - self.C_AD * self.omega_r - self.C_theta_rTD * self.theta_r;
 		self.omega_r += self.alpha_r * dt;
 		self.theta_r += self.omega_r * dt;
 
 		// Update vertical and horizontal acceleration
 		self.A_x = self.C_T * self.I_t - self.C_D * self.theta_a * self.V_a;
-		self.A_y = self.C_L * self.theta_a * self.V_a - self.G - self.C_VD * self.V_y;
+		self.A_y = self.C_L * self.theta_a * Math.pow(self.V_a, 2) - self.G - self.C_VD * self.V_y;
 
 		// Update vertical and horizontal velocity
 		self.V_a += self.A_x * dt;

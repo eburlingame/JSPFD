@@ -209,3 +209,33 @@ function MCPSim()
 	self.panel = new MCPPanel(self);
 	self.panel.render();
 }
+
+function MCPControl(flightdata, mcp)
+{
+	var self = this;
+	self.flight = flightdata;
+	self.mcp = mcp;
+	self.rollPID = new PIDController(0.15, 0.1, 0.1);
+	self.pitch0PID = new PIDController(0.1, 0.1, 0.1);
+	self.altHoldPID = new PIDController(0.01, 0.1, 0.01);
+
+	self.IASHoldPID = new PIDController(0.1, 0.01, 0.01);
+
+	self.update = function(delta)
+	{
+		self.rollPID.update(delta, self.flight.data.bankAngle, 0);
+		self.pitch0PID.update(delta, self.flight.data.pitchAngle, 0);
+		self.altHoldPID.update(delta, self.flight.data.altitude, 1000);
+
+		self.IASHoldPID.update(delta, self.flight.data.airspeed, 185);
+
+		var alerion = self.rollPID.getControl();
+		var elevator = self.altHoldPID.getControl();
+		var throttle = self.IASHoldPID.getControl();
+		console.log(throttle);
+		if (self.mcp.memory.cmd_a_eng)
+		{
+			self.flight.sim.setControls(elevator, alerion, throttle);
+		}
+	}
+}

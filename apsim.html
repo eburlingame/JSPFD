@@ -1,12 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/segment7" type="text/css"/>
 </head>
 <body style='background-color: white; text-align: center'>
+  <div class='background'>
+    <div class='guage' id='course_L'> 000 </div>
+    <div class='guage' id='ias_mach'> 350 </div>
+    <div class='guage' id='heading'> 000 </div>
+    <div class='guage' id='altitude'> 0 </div>
+    <div class='guage' id='vert_speed'> 1000 </div>
+    <div class='guage' id='course_R'> 000 </div>
+    <div class='switch' id='at_arm'> </div>
+    <div class='switch small' id='fd_on_L'></div>
+    <div class='switch small' id='fd_on_R'></div>
+
+    <div class='knob' id='course_knob_L'> </div>
+    <div class='knob' id='course_knob_R'> </div>
+    <div class='knob' id='ias_mach_knob'> </div>
+    <div class='knob' id='heading_knob'> </div>
+    <div class='knob' id='altitude_knob'> </div>
+    <a href='#' class='button' id='n1_eng'></a>
+    <a href='#' class='button' id='speed_eng'></a>
+    <a href='#' class='button' id='lvl_chg_eng'></a>
+    <a href='#' class='button' id='v_nav_eng'></a>
+    <a href='#' class='button' id='hdg_sel_eng'></a>
+    <a href='#' class='button' id='alt_eng'></a>
+    <a href='#' class='button' id='vs_eng'></a>
+    <a href='#' class='button' id='l_nav_eng'></a>
+    <a href='#' class='button' id='vor_loc_eng'></a>
+    <a href='#' class='button' id='app_eng'></a>
+    <a href='#' class='button' id='cmd_a_eng'></a>
+    <a href='#' class='button' id='cmd_b_eng'></a>
+    <a href='#' class='button' id='cws_a_eng'></a>
+    <a href='#' class='button' id='cws_b_eng'></a>
+    <a class='wheel' id='vs_wheel'></a>
+    <a href='#' class='on' id='diseng_switch'></a>
+  </div>
   <canvas id="a" width="1050" height="810"></canvas>
 </body>
-</html>
+
 <script src="js/jquery-1.11.3.min.js"></script>
 <script src="js/elements.js"></script>
 <script src="geodesy/latlon-spherical.js"></script>
@@ -20,6 +54,14 @@
 <script src="js/guages/vertical_speed.js"></script>
 <script src="js/guages/profile_display.js"></script>
 <script src="js/guages/horizontal_situation.js"></script>
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.mousewheel.js"></script>
+<script src="js/mcp_panel.js"></script>
+<script src="js/panel_components.js"></script>
+<script src="js/mcp_sim.js"></script>
+<script src="js/pid.js"></script>
+
 <script type="text/javascript">
 
   var cvs = document.getElementById("a");
@@ -28,8 +70,11 @@
   var data = new FlightData();
   data.runDemo();
 
+  var sim = new MCPSim();
+  var mcp_control = new MCPControl(data, sim);
+
   // Initalize the guages' positions
-  var guages = []
+  var guages = [];
   function initGuages()
   {
     guages[0] = new AttitudeIndicator(ctx, 
@@ -130,21 +175,39 @@
   var EARTH = "#0B6739"; 
   var BUG = "#F844F8";
 
+  var paused = false;
+  var elapsed = 0;
+  const SIM_RATE = 1;
   // Variables to hold time passing
   var now = then = delta = new Date().getTime();
   var render = function() 
   {   
     // Calculated delta time
     now = new Date().getTime();
-    delta = (now - then) / 1000.0;
+    delta = (now - then) / 1000.0 * SIM_RATE;
     then = now;
+    elapsed += delta;
 
-    // Update the data source
-    data.updateData(delta);
+    if (elapsed < 0.01)
+    {
+      data.sim.setControls(1, 0, 1);
+    }
+    else
+    {
+      sim.memory.cmd_a_eng = true;
+      sim.panel.render();
+    }
 
-    // Update and rate frames
-    updateAndDraw();
+    if (!paused)
+    {
+      // Update the data source
+      data.updateData(delta);
+      mcp_control.update(delta);
 
+      // Update and rate frames
+      updateAndDraw();
+
+    }
     // Request redraw
     requestAnimationFrame(render);
   };
@@ -194,6 +257,12 @@
     var elevator = -(cvs.height / 2 - mousePos.y) / cvs.height;
     var alerion = (cvs.width / 2 - mousePos.x) / cvs.width;
     data.sim.setControls(elevator, alerion, 1);
+
+  }, false);
+
+    document.addEventListener('keypress', function(evt) {
+      if (evt.code == "KeyP")
+        paused = ! paused;
 
   }, false);
 
