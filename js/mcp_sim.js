@@ -215,25 +215,68 @@ function MCPControl(flightdata, mcp)
 	var self = this;
 	self.flight = flightdata;
 	self.mcp = mcp;
+
 	self.rollPID = new PIDController(0.15, 0.1, 0.1);
 	self.pitch0PID = new PIDController(0.1, 0.1, 0.1);
 	self.altHoldPID = new PIDController(0.01, 0.1, 0.01);
-
+	self.VSPID = new PIDController(0.01, 0.1, 0.01);
 	self.IASHoldPID = new PIDController(0.1, 0.01, 0.01);
+
+	self.speedMode = "off"; // off, IAS
+	self.pitchMode = "off"; // off, vert speed, altitude hold
+	self.rollMode = "off"; // off, level
+
+	self.modeSelect = function()
+	{
+		if (!self.mcp.memory.cmd_a_eng)
+		{
+			self.speedMode = "off"; // off, IAS
+			self.pitchMode = "off"; // off, vert_speed, altitude_hold
+			self.rollMode = "off"; // off, level
+		}
+		else
+		{
+			// Roll mode select
+			self.rollMode = "level";
+
+			// Speed mode select
+			if (self.mcp.memory.at_arm && self.mcp.memory.speedMode == "speed")
+				self.speedMode = "IAS";
+
+			// Pitch mode select
+			if (self.mcp.memory.altitude_hold)
+				self.pitchMode = "altitude_hold";
+			else if (self.mcp.memory.vs_eng)
+				self.pitchMode = "vert_speed";
+		}
+	}
 
 	self.update = function(delta)
 	{
+		self.modeSelect();
+
 		self.rollPID.update(delta, self.flight.data.bankAngle, 0);
 		self.pitch0PID.update(delta, self.flight.data.pitchAngle, 0);
-		self.altHoldPID.update(delta, self.flight.data.altitude, 1000);
-
-		self.IASHoldPID.update(delta, self.flight.data.airspeed, 185);
+		self.altHoldPID.update(delta, self.flight.data.altitude, self.mcp.memory.altitude);
+		self.VSPID.update(delta, self.flight.data.altitude, self.mcp.memory.vert_speed);
+		self.IASHoldPID.update(delta, self.flight.data.vert_speed, self.mcp.memory.ias);
 
 		var alerion = self.rollPID.getControl();
-		var elevator = self.altHoldPID.getControl();
-		var throttle = self.IASHoldPID.getControl();
-		console.log(throttle);
-		if (self.mcp.memory.cmd_a_eng)
+		var elevator = self.pitch0PID.getControl();
+		var throttle = 0.5;
+		
+		if (self.speedMode == "IAS")
+			throttle = self.IASHoldPID.getControl();
+
+		if (self.pitchMode == "altitude_hold")
+			elevator = self.altHoldPID.getControl();
+		else if (self.pitchMode == "vert_speed")
+			elevator = self.VSPID.getControl();
+
+		if (self.rollMode == "level")
+			alerion = self.rollPID.getControl();
+
+		if (self.mcp.memory.cmd_a_eng || self.mcp.memory.cmd_b_eng)
 		{
 			self.flight.sim.setControls(elevator, alerion, throttle);
 		}

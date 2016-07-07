@@ -70,8 +70,8 @@
   var data = new FlightData();
   data.runDemo();
 
-  var sim = new MCPSim();
-  var mcp_control = new MCPControl(data, sim);
+  var ap_sim = new MCPSim();
+  var mcp_control = new MCPControl(data, ap_sim);
 
   // Initalize the guages' positions
   var guages = [];
@@ -180,7 +180,7 @@
   const SIM_RATE = 1;
   // Variables to hold time passing
   var now = then = delta = new Date().getTime();
-  var render = function() 
+  var render = function()
   {   
     // Calculated delta time
     now = new Date().getTime();
@@ -188,20 +188,22 @@
     then = now;
     elapsed += delta;
 
-    if (elapsed < 0.01)
-    {
-      data.sim.setControls(1, 0, 1);
-    }
-    else
-    {
-      sim.memory.cmd_a_eng = true;
-      sim.panel.render();
-    }
+    // Test code remove me
+    // if (elapsed < 0.01)
+    // {
+    //   data.sim.setControls(1, 0, 1);
+    // }
+    // else
+    // {
+    //   sim.memory.cmd_a_eng = true;
+    //   sim.panel.render();
+    // }
 
     if (!paused)
     {
       // Update the data source
       data.updateData(delta);
+      data.updateAPVars(ap_sim)
       mcp_control.update(delta);
 
       // Update and rate frames
