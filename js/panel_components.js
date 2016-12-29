@@ -60,9 +60,10 @@ function IndexedKnob(sim, domID, scrollCallback)
 
 	self.scroll = function(event)
 	{
-		var indexes = event.originalEvent.wheelDelta / 120;
+		var indexes = parseInt(event.originalEvent.wheelDelta / 120);
 		self.rot += indexes * 5;
 		self.render();
+		event.originalEvent.preventDefault();
 		self.scrollCallback.call(null, indexes);
 	}
 	$(self.q).on("mousewheel", self.scroll);
@@ -86,7 +87,8 @@ function VerticalScrollKnob(sim, domID, scrollCallback)
 	{
 		self.turnt = ! self.turnt;
 		self.render();
-		var indexes = event.originalEvent.wheelDelta / 120;
+		var indexes = parseInt(event.originalEvent.wheelDelta / 120);
+		event.originalEvent.preventDefault();
 		self.scrollCallback.call(null, indexes);
 	}
 	$(self.q).on("mousewheel", self.click);
